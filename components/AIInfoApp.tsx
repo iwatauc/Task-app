@@ -182,56 +182,85 @@ export default function AIInfoApp({ userEmail }: { userEmail: string }) {
 
       <section style={{ display: 'grid', gap: 12 }}>
         <h2 style={{ margin: 0, fontSize: 20 }}>AIサービス情報データベース</h2>
-        <div style={{ overflowX: 'auto', border: '1px solid #e5e7eb', borderRadius: 12 }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ background: '#f9fafb' }}>
-              <tr>
-                <th style={{ textAlign: 'left', padding: 12 }}>確認済み</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>サービス</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>できること</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>コスト（円）</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>最新更新</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>根拠URL</th>
-                <th style={{ textAlign: 'left', padding: 12 }}>共有</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredServices.map(service => (
-                <tr key={service.id} style={{ borderTop: '1px solid #e5e7eb' }}>
-                  <td style={{ padding: 12 }}>
-                    <input
-                      type="checkbox"
-                      checked={service.confirmed}
-                      onChange={() => toggleConfirmed(service.id)}
-                    />
-                  </td>
-                  <td style={{ padding: 12, fontWeight: 600 }}>{service.name}</td>
-                  <td style={{ padding: 12 }}>{service.capabilitySummary}</td>
-                  <td style={{ padding: 12 }}>¥{service.costYen.toLocaleString()}</td>
-                  <td style={{ padding: 12 }}>
-                    <div style={{ fontWeight: 600 }}>{service.latestUpdateSummary}</div>
-                    <div style={{ fontSize: 12, color: '#6b7280' }}>
-                      {dayjs(service.latestUpdatedAt).format('YYYY/MM/DD HH:mm')}
-                    </div>
-                  </td>
-                  <td style={{ padding: 12 }}>
-                    <a href={service.sourceUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb' }}>
-                      {service.sourceUrl}
-                    </a>
-                  </td>
-                  <td style={{ padding: 12 }}>
-                    <button
-                      onClick={() => handleShare(service)}
-                      style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #d1d5db', background: 'white' }}
-                    >
-                      共有
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div
+          style={{
+            display: 'grid',
+            gap: 16,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          }}
+        >
+          {filteredServices.map(service => (
+            <article
+              key={service.id}
+              style={{
+                border: '1px solid #e5e7eb',
+                borderRadius: 16,
+                padding: 16,
+                background: service.confirmed ? '#f0fdf4' : 'white',
+                display: 'grid',
+                gap: 12,
+              }}
+            >
+              <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div style={{ display: 'grid', gap: 4 }}>
+                  <div style={{ fontWeight: 700, fontSize: 16 }}>{service.name}</div>
+                  <div style={{ fontSize: 12, color: '#6b7280' }}>
+                    更新日時: {dayjs(service.latestUpdatedAt).format('YYYY/MM/DD HH:mm')}
+                  </div>
+                </div>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 }}>
+                  <input
+                    type="checkbox"
+                    checked={service.confirmed}
+                    onChange={() => toggleConfirmed(service.id)}
+                  />
+                  確認済み
+                </label>
+              </header>
+              <div style={{ fontSize: 14, lineHeight: 1.6 }}>{service.capabilitySummary}</div>
+              <div style={{ display: 'grid', gap: 6 }}>
+                <div style={{ fontWeight: 600 }}>最新アップデート</div>
+                <div style={{ fontSize: 13, color: '#4b5563' }}>{service.latestUpdateSummary}</div>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+                <span
+                  style={{
+                    padding: '6px 10px',
+                    background: '#f3f4f6',
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 600,
+                  }}
+                >
+                  コスト: ¥{service.costYen.toLocaleString()}
+                </span>
+                <a
+                  href={service.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: '#2563eb', fontSize: 12, wordBreak: 'break-all' }}
+                >
+                  根拠URL
+                </a>
+              </div>
+              <button
+                onClick={() => handleShare(service)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: 10,
+                  border: '1px solid #d1d5db',
+                  background: 'white',
+                  fontWeight: 600,
+                }}
+              >
+                共有
+              </button>
+            </article>
+          ))}
         </div>
+        {filteredServices.length === 0 && (
+          <div style={{ fontSize: 13, color: '#6b7280' }}>条件に一致するサービスがありません。</div>
+        )}
         {shareMessage && <div style={{ fontSize: 12, color: '#16a34a' }}>{shareMessage}</div>}
       </section>
 
