@@ -1,49 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
-  const supabase = createClient()
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
 
-  useEffect(() => {
-    // すでにログイン済みなら middleware が / に飛ばすが、念のため
-    supabase.auth.getUser().then(() => {})
-  }, [supabase])
-
-  const loginGoogle = async () => {
-    setLoading(true)
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-    setLoading(false)
+  async function login(event: React.FormEvent) {
+    event.preventDefault()
+    const supabase = createClient()
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: `${location.origin}/auth/callback` } })
+    setMessage(error ? error.message : 'ログインリンクをメールに送信しました。')
   }
 
   return (
-    <main style={{ padding: 24, maxWidth: 520, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700 }}>ログイン</h1>
-      <p style={{ marginTop: 8, opacity: 0.8 }}>
-        共有前提のため、Googleログインを使います。
-      </p>
-
-      <button
-        onClick={loginGoogle}
-        disabled={loading}
-        style={{
-          marginTop: 16,
-          padding: '12px 14px',
-          borderRadius: 10,
-          border: '1px solid #ddd',
-          width: '100%',
-          fontWeight: 600,
-        }}
-      >
-        {loading ? 'リダイレクト中…' : 'Googleでログイン'}
-      </button>
+    <main className="min-h-screen bg-stone-50 p-4 text-stone-950 dark:bg-stone-950 dark:text-stone-50">
+      <div className="mx-auto mt-16 max-w-md rounded-3xl border border-stone-200 bg-white p-8 shadow-sm dark:border-stone-800 dark:bg-stone-900">
+        <h1 className="text-3xl font-black">AI下絵工房にログイン</h1>
+        <p className="mt-2 text-sm text-stone-500 dark:text-stone-400">Supabase Auth のメールリンクでログインします。</p>
+        <form onSubmit={login} className="mt-6 grid gap-4"><input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="input" placeholder="you@example.com" /><button className="rounded-2xl bg-red-500 px-5 py-3 font-black text-white">ログインリンクを送る</button></form>
+        {message && <p className="mt-4 text-sm text-stone-600 dark:text-stone-300">{message}</p>}
+      </div>
     </main>
   )
 }
