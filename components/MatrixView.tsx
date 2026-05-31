@@ -3,19 +3,8 @@
 import dayjs from 'dayjs'
 import type { Task } from './TaskApp'
 
-export default function MatrixView({ tasks }: { tasks: Task[] }) {
-  const today = dayjs().format('YYYY-MM-DD')
-  const open = tasks.filter(t => !t.is_done)
-
-  const isUrgent = (t: Task) => t.due_date <= today
-  const isImportant = (t: Task) => t.priority === 3
-
-  const q1 = open.filter(t => isImportant(t) && isUrgent(t))     // 重要×緊急
-  const q2 = open.filter(t => isImportant(t) && !isUrgent(t))    // 重要×非緊急
-  const q3 = open.filter(t => !isImportant(t) && isUrgent(t))    // 非重要×緊急
-  const q4 = open.filter(t => !isImportant(t) && !isUrgent(t))   // 非重要×非緊急
-
-  const Box = ({ title, list }: { title: string; list: Task[] }) => (
+function MatrixBox({ title, list }: { title: string; list: Task[] }) {
+  return (
     <div style={{ border: '1px solid #eee', borderRadius: 16, padding: 12 }}>
       <div style={{ fontWeight: 900 }}>{title}</div>
       <div style={{ marginTop: 8, display: 'grid', gap: 6 }}>
@@ -29,13 +18,27 @@ export default function MatrixView({ tasks }: { tasks: Task[] }) {
       </div>
     </div>
   )
+}
+
+export default function MatrixView({ tasks }: { tasks: Task[] }) {
+  const today = dayjs().format('YYYY-MM-DD')
+  const open = tasks.filter(t => !t.is_done)
+
+  const isUrgent = (t: Task) => t.due_date <= today
+  const isImportant = (t: Task) => t.priority === 3
+
+  const q1 = open.filter(t => isImportant(t) && isUrgent(t))     // 重要×緊急
+  const q2 = open.filter(t => isImportant(t) && !isUrgent(t))    // 重要×非緊急
+  const q3 = open.filter(t => !isImportant(t) && isUrgent(t))    // 非重要×緊急
+  const q4 = open.filter(t => !isImportant(t) && !isUrgent(t))   // 非重要×非緊急
+
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: 12 }}>
-      <Box title="🔴 重要 × 緊急（今やる）" list={q1} />
-      <Box title="🟡 重要 × 非緊急（育てる）" list={q2} />
-      <Box title="⚪ 非重要 × 緊急（短く片付ける）" list={q3} />
-      <Box title="⚫ 非重要 × 非緊急（やらない候補）" list={q4} />
+      <MatrixBox title="🔴 重要 × 緊急（今やる）" list={q1} />
+      <MatrixBox title="🟡 重要 × 非緊急（育てる）" list={q2} />
+      <MatrixBox title="⚪ 非重要 × 緊急（短く片付ける）" list={q3} />
+      <MatrixBox title="⚫ 非重要 × 非緊急（やらない候補）" list={q4} />
     </div>
   )
 }

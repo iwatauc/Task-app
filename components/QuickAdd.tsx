@@ -41,14 +41,14 @@ export default function QuickAdd({ onAdded }: { onAdded: () => void }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-        <select value={due} onChange={e => setDue(e.target.value as any)} style={{ padding: 10, borderRadius: 10 }}>
+        <select value={due} onChange={e => setDue(e.target.value as 'today' | 'tomorrow')} style={{ padding: 10, borderRadius: 10 }}>
           <option value="today">今日</option>
           <option value="tomorrow">明日</option>
         </select>
 
         <select
           value={priority}
-          onChange={e => setPriority(Number(e.target.value) as any)}
+          onChange={e => setPriority(Number(e.target.value) as 1 | 2 | 3)}
           style={{ padding: 10, borderRadius: 10 }}
         >
           <option value={3}>高</option>
