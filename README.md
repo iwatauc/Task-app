@@ -24,6 +24,16 @@ AI画像を完成品としてではなく、イラスト制作の下絵・構図
 > TODO: npm registry の制限がある環境でもビルドできるよう、OpenAI 連携は `lib/services/openaiImageService.ts` に REST 実装として隔離しています。公式 Node SDK へ移行する場合もこの service 層だけを差し替えれば済む構成です。
 
 
+## 超初心者向けガイド
+
+一個ずつ進めたい場合は、まず `docs/beginner-setup-ja.md` を見てください。画面だけ見る、スマホだけでVercelに出す、PCで生成まで動かす、の3コースに分けています。
+
+環境変数が入っているか確認したい場合は、次を実行できます。
+
+```bash
+npm run setup:check
+```
+
 ## スマホだけで今すぐ開く最短ルート
 
 ローカル PC なしでスマホから完結したい場合は、Vercel + Supabase のブラウザ UI だけで動かすのが最短です。
