@@ -1,9 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
-import TaskApp from '@/components/TaskApp'
+import AIInfoApp from '@/components/AIInfoApp'
 
 export default async function HomePage() {
-  const supabase = await createClient()
-  const { data } = await supabase.auth.getUser()
+  const hasSupabaseConfig = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )
+  let userEmail = ''
 
-  return <TaskApp userEmail={data.user?.email ?? ''} />
+  if (hasSupabaseConfig) {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+    userEmail = data.user?.email ?? ''
+  }
+
+  return <AIInfoApp userEmail={userEmail} />
 }
